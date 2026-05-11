@@ -15,9 +15,15 @@
     <header class="site-header">
       <div class="container nav">
         <a href="#" class="brand">
-          <span class="brand-icon" aria-hidden="true">
-            <span class="ginger-root"></span>
-            <span class="ginger-leaf"></span>
+          <span class="brand-logo-wrap" aria-hidden="true">
+            <img
+              src="assets/logo1.png"
+              alt=""
+              class="brand-logo"
+              width="170"
+              height="167"
+              decoding="async"
+            />
           </span>
           <span
             ><strong>GINGER TAPE</strong
@@ -43,6 +49,10 @@
               Ginger Tape i Temperature Tape su praktične wellness trake za
               svakodnevnu negu tela — za prijatan osećaj toplote, hlađenja i
               lakši ritam dana.
+            </p>
+            <p class="eyebrow">
+              <span></span> Istaknuto: Paket za kuću (2x Ginger + 2x
+              Temperature) 2.990 RSD
             </p>
             <div class="hero-actions">
               <a href="#order" class="btn btn-primary">Poruči odmah</a>
@@ -95,11 +105,11 @@
         <div class="container">
           <div class="section-head">
             <p class="eyebrow centered"><span></span> Naši proizvodi</p>
-            <h2>Dve trake za dve različite potrebe.</h2>
+            <h2>Dve trake + paket za kuću koji najbolje prolazi.</h2>
             <p>
               Jedna za prijatan osećaj toplote i podrške, druga za rashlađujući
-              osećaj svežine. Jednostavno, praktično i spremno za svakodnevnu
-              upotrebu.
+              osećaj svežine. Fore su kratke: jedna greje, druga hladi, a
+              zajedno štede novac i živce.
             </p>
           </div>
           <div class="product-grid">
@@ -123,6 +133,12 @@
                   <li>Za mišiće, zglobove i svakodnevni komfor</li>
                   <li>Lako nanošenje i praktično pakovanje</li>
                 </ul>
+                <p>
+                  <strong>Cene Ginger Tape:</strong><br />
+                  1 pakovanje: 990 RSD<br />
+                  2 pakovanja: 1.790 RSD<br />
+                  3 pakovanja: 2.490 RSD
+                </p>
                 <a href="#order" class="btn btn-primary">Poruči Ginger Tape</a>
               </div>
             </article>
@@ -146,6 +162,12 @@
                   <li>Za svakodnevnu kućnu negu</li>
                   <li>Jednostavno za korišćenje</li>
                 </ul>
+                <p>
+                  <strong>Cene Temperature Tape:</strong><br />
+                  1 pakovanje: 890 RSD<br />
+                  2 pakovanja: 1.590 RSD<br />
+                  3 pakovanja: 2.190 RSD
+                </p>
                 <a href="#order" class="btn btn-darkblue"
                   >Poruči Temperature Tape</a
                 >
@@ -200,27 +222,27 @@
             <p class="eyebrow"><span></span> Paketi za start</p>
             <h2>Najlakše je krenuti sa paketom za kuću.</h2>
             <p>
-              Predlog za prodaju: ponudi pojedinačna pakovanja, ali najviše
-              guraj kombinovani paket jer kupac odmah razume razliku između
-              warming i cooling trake.
+              Nemoj da biraš između toplo i hladno kad može oba. Paket za kuću
+              radi najbolji posao: pokriva više situacija i ispada najpametnija
+              kupovina.
             </p>
           </div>
           <div class="pricing-cards">
             <div class="price-card">
-              <h3>1 pakovanje</h3>
-              <p>Za probu proizvoda</p>
-              <strong>cena po dogovoru</strong>
+              <h3>Ginger Tape</h3>
+              <p>1 pak: 990 RSD<br />2 pak: 1.790 RSD<br />3 pak: 2.490 RSD</p>
+              <strong>Toplota za svaki dan</strong>
             </div>
             <div class="price-card featured">
-              <span>Preporuka</span>
-              <h3>Ginger + Temperature</h3>
-              <p>Kombinovani wellness paket</p>
-              <strong>najbolja ponuda</strong>
+              <span>Istaknuto</span>
+              <h3>Paket za kuću</h3>
+              <p>2x Ginger Tape + 2x Temperature Tape</p>
+              <strong>2.990 RSD</strong>
             </div>
             <div class="price-card">
-              <h3>Family paket</h3>
-              <p>Više pakovanja za kuću</p>
-              <strong>ušteda na količinu</strong>
+              <h3>Temperature Tape</h3>
+              <p>1 pak: 890 RSD<br />2 pak: 1.590 RSD<br />3 pak: 2.190 RSD</p>
+              <strong>Kad treba brzo osveženje</strong>
             </div>
           </div>
         </div>
@@ -232,12 +254,12 @@
             <p class="eyebrow"><span></span> Online poručivanje</p>
             <h2>Poruči za manje od jednog minuta.</h2>
             <p>
-              Popuni podatke, klikni na dugme i porudžbina će se otvoriti kao
-              WhatsApp poruka. Nakon toga samo pošalješ poruku i porudžbina je
-              evidentirana.
+              Popuni podatke i porudžbina ide direktno u tabelu. Ako endpoint za
+              tabelu nije podešen, sistem automatski skida CSV fajl spreman za
+              Excel.
             </p>
             <div class="order-note">
-              <strong>Napomena:</strong> Broj se menja u fajlu
+              <strong>Napomena:</strong> Endpoint za tabelu se menja u fajlu
               <code>script.js</code>.
             </div>
           </div>
@@ -247,7 +269,7 @@
                 >Ime i prezime<input
                   id="name"
                   type="text"
-                  placeholder="Npr. Stefan Manić"
+                  placeholder="Npr. Petar Petrovic"
                   required /></label
               ><label
                 >Telefon<input
@@ -274,10 +296,11 @@
               ><label
                 >Proizvod<select id="product" required>
                   <option value="">Izaberi proizvod</option>
-                  <option>Ginger Tape</option>
-                  <option>Temperature Tape</option>
-                  <option>Ginger Tape + Temperature Tape</option>
-                  <option>Family paket</option>
+                  <option>Ginger Tape (1/2/3 pakovanja)</option>
+                  <option>Temperature Tape (1/2/3 pakovanja)</option>
+                  <option>
+                    Paket za kuću (2x Ginger + 2x Temperature) - 2.990 RSD
+                  </option>
                 </select></label
               >
             </div>
@@ -303,7 +326,7 @@
               ></textarea>
             </label>
             <button type="submit" class="btn btn-primary full">
-              Pošalji porudžbinu na WhatsApp
+              Sačuvaj porudžbinu
             </button>
           </form>
         </div>

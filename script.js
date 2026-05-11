@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = "381658005557"; // Promeni broj ovde. Format: 381 + broj bez prve nule.
+const ORDER_ENDPOINT = ""; // Ovde ubaci endpoint za upis u tabelu (npr. Google Apps Script Web App URL).
 
 const form = document.getElementById("orderForm");
 
@@ -16,19 +16,82 @@ form.addEventListener("submit", function (event) {
     note: document.getElementById("note").value.trim(),
   };
 
-  const message = [
-    "Nova Ginger Tape porudžbina:",
-    "",
-    `Ime i prezime: ${data.name}`,
-    `Telefon: ${data.phone}`,
-    `Adresa: ${data.address}`,
-    `Grad: ${data.city}`,
-    `Proizvod: ${data.product}`,
-    `Količina: ${data.quantity}`,
-    `Plaćanje: ${data.payment}`,
-    `Napomena: ${data.note || "/"}`,
-  ].join("\n");
+  const payload = {
+    ...data,
+    submittedAt: new Date().toISOString(),
+  };
 
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  window.open(whatsappUrl, "_blank");
+  submitOrder(payload)
+    .then(function () {
+      form.reset();
+      alert("Porudžbina je uspešno sačuvana.");
+    })
+    .catch(function () {
+      alert("Došlo je do greške pri čuvanju porudžbine.");
+    });
 });
+
+async function submitOrder(payload) {
+  if (ORDER_ENDPOINT.trim()) {
+    // no-cors je praktičan za statičke sajtove i jednostavne webhook endpointe.
+    await fetch(ORDER_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload),
+    });
+    return;
+  }
+
+  downloadCsv([payload]);
+}
+
+function downloadCsv(rows) {
+  const headers = [
+    "Datum",
+    "Ime i prezime",
+    "Telefon",
+    "Adresa",
+    "Grad",
+    "Proizvod",
+    "Kolicina",
+    "Placanje",
+    "Napomena",
+  ];
+
+  const csvRows = [
+    headers.join(","),
+    ...rows.map(function (row) {
+      return [
+        row.submittedAt,
+        row.name,
+        row.phone,
+        row.address,
+        row.city,
+        row.product,
+        row.quantity,
+        row.payment,
+        row.note || "/",
+      ]
+        .map(escapeCsvValue)
+        .join(",");
+    }),
+  ];
+
+  const blob = new Blob(["\ufeff" + csvRows.join("\n")], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = `porudzbina-${Date.now()}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function escapeCsvValue(value) {
+  const stringValue = String(value ?? "");
+  return `"${stringValue.replace(/"/g, '""')}"`;
+}
