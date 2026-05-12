@@ -1,6 +1,31 @@
 const ORDER_ENDPOINT = ""; // Ovde ubaci endpoint za upis u tabelu (npr. Google Apps Script Web App URL).
+const DELIVERY_FEE = 500;
+
+const PRICE_LIST = {
+  "Ginger Tape (1/2/3 pakovanja)": {
+    "1 pakovanje": 990,
+    "2 pakovanja": 1790,
+    "3 pakovanja": 2490,
+  },
+  "Temperature Tape (1/2/3 pakovanja)": {
+    "1 pakovanje": 890,
+    "2 pakovanja": 1590,
+    "3 pakovanja": 2190,
+  },
+};
 
 const form = document.getElementById("orderForm");
+const productSelect = document.getElementById("product");
+const quantitySelect = document.getElementById("quantity");
+const totalPreview = document.getElementById("orderTotalPreview");
+const placementNote = document.getElementById("placementNote");
+
+productSelect.addEventListener("change", function () {
+  syncOrderUi();
+});
+quantitySelect.addEventListener("change", updateTotalPreview);
+
+syncOrderUi();
 
 form.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -16,14 +41,24 @@ form.addEventListener("submit", function (event) {
     note: document.getElementById("note").value.trim(),
   };
 
+  const basePrice = getBasePrice(data.product, data.quantity);
+  if (basePrice === null) {
+    alert("Izaberi validnu kombinaciju proizvoda i količine.");
+    return;
+  }
+
   const payload = {
     ...data,
+    basePrice,
+    deliveryFee: DELIVERY_FEE,
+    totalPrice: basePrice + DELIVERY_FEE,
     submittedAt: new Date().toISOString(),
   };
 
   submitOrder(payload)
     .then(function () {
       form.reset();
+      syncOrderUi();
       alert("Porudžbina je uspešno sačuvana.");
     })
     .catch(function () {
@@ -55,6 +90,9 @@ function downloadCsv(rows) {
     "Proizvod",
     "Kolicina",
     "Placanje",
+    "Cena proizvoda",
+    "Dostava",
+    "Ukupno",
     "Napomena",
   ];
 
@@ -70,6 +108,9 @@ function downloadCsv(rows) {
         row.product,
         row.quantity,
         row.payment,
+        row.basePrice,
+        row.deliveryFee,
+        row.totalPrice,
         row.note || "/",
       ]
         .map(escapeCsvValue)
@@ -94,4 +135,85 @@ function downloadCsv(rows) {
 function escapeCsvValue(value) {
   const stringValue = String(value ?? "");
   return `"${stringValue.replace(/"/g, '""')}"`;
+}
+
+function getBasePrice(product, quantity) {
+  if (!product) {
+    return null;
+  }
+
+  if (isFamilyPackage(product)) {
+    return 2990;
+  }
+
+  if (!quantity) {
+    return null;
+  }
+
+  const productPrices = PRICE_LIST[product];
+  if (!productPrices) {
+    return null;
+  }
+
+  return productPrices[quantity] ?? null;
+}
+
+function formatRsd(amount) {
+  return `${new Intl.NumberFormat("sr-RS").format(amount)} RSD`;
+}
+
+function updateTotalPreview() {
+  const basePrice = getBasePrice(productSelect.value, quantitySelect.value);
+
+  if (basePrice === null) {
+    totalPreview.textContent =
+      "Izaberi proizvod i količinu da vidiš cenu sa dostavom.";
+    return;
+  }
+
+  const total = basePrice + DELIVERY_FEE;
+  totalPreview.innerHTML =
+    `Cena proizvoda: ${formatRsd(basePrice)}<br>` +
+    `Dostava: ${formatRsd(DELIVERY_FEE)}<br>` +
+    `<strong>Ukupno za plaćanje: ${formatRsd(total)}</strong>`;
+}
+
+function isFamilyPackage(product) {
+  return product.startsWith("Paket za kuću");
+}
+
+function updatePlacementNote() {
+  const product = productSelect.value;
+
+  if (product.startsWith("Ginger Tape")) {
+    placementNote.textContent =
+      "Savet: Ginger Tape može na više mesta tela. Temperature Tape ide na čelo.";
+    return;
+  }
+
+  if (product.startsWith("Temperature Tape")) {
+    placementNote.textContent =
+      "Savet: Temperature Tape ide na čelo. Ginger Tape može na više mesta tela.";
+    return;
+  }
+
+  if (isFamilyPackage(product)) {
+    placementNote.textContent =
+      "Savet za paket: Ginger Tape koristi na više mesta tela, Temperature Tape ide na čelo.";
+    return;
+  }
+}
+
+function syncOrderUi() {
+  if (isFamilyPackage(productSelect.value)) {
+    quantitySelect.value = "";
+    quantitySelect.disabled = true;
+    quantitySelect.required = false;
+  } else {
+    quantitySelect.disabled = false;
+    quantitySelect.required = true;
+  }
+
+  updatePlacementNote();
+  updateTotalPreview();
 }
