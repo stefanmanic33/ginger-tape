@@ -2,15 +2,15 @@ const ORDER_ENDPOINT = ""; // Ovde ubaci endpoint za upis u tabelu (npr. Google 
 const DELIVERY_FEE = 500;
 
 const PRICE_LIST = {
-  "Ginger Tape (1/2/3 pakovanja)": {
+  "Ginger Tape - 10 flastera (1/2/3 pakovanja)": {
+    "1 pakovanje": 1290,
+    "2 pakovanja": 2390,
+    "3 pakovanja": 3390,
+  },
+  "Temperature Tape - 5 flastera (1/2/3 pakovanja)": {
     "1 pakovanje": 990,
     "2 pakovanja": 1790,
     "3 pakovanja": 2490,
-  },
-  "Temperature Tape (1/2/3 pakovanja)": {
-    "1 pakovanje": 890,
-    "2 pakovanja": 1590,
-    "3 pakovanja": 2190,
   },
 };
 
@@ -143,7 +143,7 @@ function getBasePrice(product, quantity) {
   }
 
   if (isFamilyPackage(product)) {
-    return 2990;
+    return 3590;
   }
 
   if (!quantity) {
@@ -187,21 +187,24 @@ function updatePlacementNote() {
 
   if (product.startsWith("Ginger Tape")) {
     placementNote.textContent =
-      "Savet: Ginger Tape može na više mesta tela. Temperature Tape ide na čelo.";
+      "Savet: Ginger Tape koristi kada si kod kuće, najbolje uveče pred spavanje, a ujutru skini traku.";
     return;
   }
 
   if (product.startsWith("Temperature Tape")) {
     placementNote.textContent =
-      "Savet: Temperature Tape ide na čelo. Ginger Tape može na više mesta tela.";
+      "Savet: Temperature Tape koristi za rashlađivanje po potrebi, a Ginger Tape je idealan za kućni večernji režim.";
     return;
   }
 
   if (isFamilyPackage(product)) {
     placementNote.textContent =
-      "Savet za paket: Ginger Tape koristi na više mesta tela, Temperature Tape ide na čelo.";
+      "Savet za paket: Ginger Tape stavi uveče kod kuće i skini ujutru, Temperature Tape koristi po potrebi za rashlađivanje.";
     return;
   }
+
+  placementNote.textContent =
+    "Savet: Ginger Tape je najbolji za kućni režim, posebno uveče pred spavanje. Temperature Tape koristi se po potrebi za rashlađivanje.";
 }
 
 function syncOrderUi() {
